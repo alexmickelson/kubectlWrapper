@@ -78,6 +78,18 @@ namespace kubectlWrapper.Shared.ViewModels
             }
         }
 
+        private string namespaces;
+
+        public string Namespaces
+        {
+            get { return namespaces; }
+            set
+            {
+                namespaces = value;
+                RaisePropertyChanged(nameof(Error));
+            }
+        }
+
 
         public async Task<bool> GetNodes()
         {
@@ -130,6 +142,16 @@ namespace kubectlWrapper.Shared.ViewModels
             return true;
         }
 
+        public async Task<bool> GetNamespaces()
+        {
+            var p = new Process();
+            p.StartInfo.FileName = "ssh";
+            p.StartInfo.Arguments = SSHArgs.GetNamespaces;
+
+            Namespaces = await RunProcessAsync(p);
+            return true;
+        }
+
 
         public Task<string> RunProcessAsync(Process process)
         {
@@ -139,13 +161,13 @@ namespace kubectlWrapper.Shared.ViewModels
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.RedirectStandardError = true;
             process.EnableRaisingEvents = true;
-            
+
             process.Exited += (sender, args) =>
             {
                 if (process.ExitCode != 0)
                 {
                     Error = "The process did not exit correctly. \n" +
-                        "The corresponding error message was: \n" + 
+                        "The corresponding error message was: \n" +
                         process.StandardError.ReadToEnd();
                     tcs.SetResult("Error running command " + process.StartInfo.FileName + " " + process.StartInfo.Arguments);
                 }

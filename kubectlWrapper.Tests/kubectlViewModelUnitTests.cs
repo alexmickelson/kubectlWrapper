@@ -66,6 +66,16 @@ namespace kubectlWrapper.Tests
 
             vm.Pods.Should().NotBeNullOrEmpty();
         }
+        [Test]
+        public void kubectl_get_namespaces()
+        {
+            var vm = new KubectlViewModel();
+            vm.Namespaces = string.Empty;
+            var t = vm.GetNamespaces();
+            t.Wait();
+
+            vm.Namespaces.Should().NotBeNullOrEmpty();
+        }
 
         [Test]
         public void bad_command_throws_error()
