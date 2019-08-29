@@ -1,5 +1,6 @@
 ﻿using kubectlWrapper.Shared.ViewModels;
 using System;
+using System.Threading.Tasks;
 
 namespace kubectlWrapper.Console
 {
@@ -7,18 +8,27 @@ namespace kubectlWrapper.Console
     {
         static void Main(string[] args)
         {
+            AsyncMain().Wait();
+
+        }
+        static async Task AsyncMain()
+        {
             var kubectl = new KubectlViewModel();
-            kubectl.GetClusterInfo();
-            System.Console.WriteLine("Cluster Info:");
-            System.Console.WriteLine(kubectl.ClusterInfo);
+            await kubectl.GetClusterInfo();
+            System.Console.WriteLine("Cluster info: \n" + kubectl.ClusterInfo);
 
-            kubectl.GetNodes();
-            System.Console.WriteLine("Nodes:");
-            System.Console.WriteLine(kubectl.Nodes);
+            await kubectl.GetNodes();
+            System.Console.WriteLine("Nodes: \n" + kubectl.Nodes);
 
-            //kubectl.();
-            //System.Console.WriteLine("Nodes:");
-            //System.Console.WriteLine(kubectl.Nodes);
+            await kubectl.GetPods();
+            System.Console.WriteLine("Pods: \n" + kubectl.Pods);
+
+            await kubectl.GetDeployments();
+            System.Console.WriteLine("Deployments: \n" + kubectl.Deployments);
+
+            await kubectl.GetServices();
+            System.Console.WriteLine("Services: \n" + kubectl.Services);
+
 
         }
     }

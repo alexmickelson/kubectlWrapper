@@ -85,7 +85,7 @@ namespace kubectlWrapper.Shared.ViewModels
             p.StartInfo.FileName = "ssh";
             p.StartInfo.Arguments = SSHArgs.GetNodes;
 
-            Nodes = await runProcessAsync(p);
+            Nodes = await RunProcessAsync(p);
             return true;
         }
 
@@ -95,12 +95,43 @@ namespace kubectlWrapper.Shared.ViewModels
             p.StartInfo.FileName = "ssh";
             p.StartInfo.Arguments = SSHArgs.GetConfig;
 
-            ClusterInfo = await runProcessAsync(p);
+            ClusterInfo = await RunProcessAsync(p);
+            return true;
+        }
+
+        public async Task<bool> GetDeployments()
+        {
+            var p = new Process();
+            p.StartInfo.FileName = "ssh";
+            p.StartInfo.Arguments = SSHArgs.GetDeployments;
+
+            Deployments = await RunProcessAsync(p);
             return true;
         }
 
 
-        private Task<string> runProcessAsync(Process process)
+        public async Task<bool> GetServices()
+        {
+            var p = new Process();
+            p.StartInfo.FileName = "ssh";
+            p.StartInfo.Arguments = SSHArgs.GetServices;
+
+            Services = await RunProcessAsync(p);
+            return true;
+        }
+
+        public async Task<bool> GetPods()
+        {
+            var p = new Process();
+            p.StartInfo.FileName = "ssh";
+            p.StartInfo.Arguments = SSHArgs.GetPods;
+
+            Pods = await RunProcessAsync(p);
+            return true;
+        }
+
+
+        public Task<string> RunProcessAsync(Process process)
         {
             var tcs = new TaskCompletionSource<string>();
 
@@ -108,18 +139,15 @@ namespace kubectlWrapper.Shared.ViewModels
             process.StartInfo.CreateNoWindow = true;
             process.StartInfo.RedirectStandardError = true;
             process.EnableRaisingEvents = true;
-
+            
             process.Exited += (sender, args) =>
             {
                 if (process.ExitCode != 0)
                 {
-                    //var errorMessage = process.StandardError.ReadToEnd();
-                    //tcs.SetException(new InvalidOperationException("The process did not exit correctly. " +
-                    //    "The corresponding error message was: " + errorMessage));
                     Error = "The process did not exit correctly. \n" +
                         "The corresponding error message was: \n" + 
                         process.StandardError.ReadToEnd();
-                    tcs.SetResult("there was an error");
+                    tcs.SetResult("Error running command " + process.StartInfo.FileName + " " + process.StartInfo.Arguments);
                 }
                 else
                 {
