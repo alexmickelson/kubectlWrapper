@@ -16,9 +16,9 @@ namespace kubectlWrapper.Console
             System.Console.WriteLine("Nodes:");
             System.Console.WriteLine(kubectl.Nodes);
 
-            kubectl.();
-            System.Console.WriteLine("Nodes:");
-            System.Console.WriteLine(kubectl.Nodes);
+            //kubectl.();
+            //System.Console.WriteLine("Nodes:");
+            //System.Console.WriteLine(kubectl.Nodes);
 
         }
     }
