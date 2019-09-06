@@ -157,6 +157,12 @@
       <Version>7.2.0.1367</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\kubectlWrapper.Shared\kubectlWrapper.Shared.csproj">
+      <Project>{3E269B91-5B7A-4E61-8DE1-AF12BCE88BE5}</Project>
+      <Name>kubectlWrapper.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

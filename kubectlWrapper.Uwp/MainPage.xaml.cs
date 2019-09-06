@@ -1,4 +1,6 @@
-﻿using System;
+﻿using kubectlWrapper.Shared.Services;
+using kubectlWrapper.Shared.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,9 +24,13 @@ namespace kubectlWrapper.Uwp
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public KubectlViewModel ViewModel { get; set; }
+
         public MainPage()
         {
             this.InitializeComponent();
+            ViewModel = new KubectlViewModel(new SshKube());
         }
+
     }
 }
