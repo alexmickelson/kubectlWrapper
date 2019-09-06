@@ -2,6 +2,7 @@
 using kubectlWrapper.Shared.Services;
 using Prism.Commands;
 using Prism.Mvvm;
+using System.Runtime.CompilerServices;
 
 namespace kubectlWrapper.Shared.ViewModels
 {
@@ -12,20 +13,63 @@ namespace kubectlWrapper.Shared.ViewModels
         public KubectlViewModel(IKubeService KubectlService)
         {
             kubectlService = KubectlService;
-            GetNodes = new DelegateCommand(
+        }
+
+        private DelegateCommand getNodes;
+        public DelegateCommand GetNodes => getNodes ?? (getNodes = new DelegateCommand(
                         //execute
                         () => Nodes = kubectlService.Kubectl(SSHArgs.GetNodes),
                         //can execute
                         () => true
-                    );
-        }
+                    ));
 
-        private DelegateCommand getNodes;
-        public DelegateCommand GetNodes
-        {
-            get { return getNodes; }
-            set { getNodes = value; }
-        }
+        private DelegateCommand getClusterInfo;
+        public DelegateCommand GetClusterInfo => getClusterInfo ?? (getClusterInfo = new DelegateCommand(
+                        //execute
+                        () => ClusterInfo = kubectlService.Kubectl(SSHArgs.GetConfig),
+                        //can execute
+                        () => true
+                    ));
+
+        private DelegateCommand getPods;
+        public DelegateCommand GetPods => getPods ?? (getPods = new DelegateCommand(
+                        //execute
+                        () => Pods = kubectlService.Kubectl(SSHArgs.GetPods),
+                        //can execute
+                        () => true
+                    ));
+
+        private DelegateCommand getDeployments;
+        public DelegateCommand GetDeployments => getDeployments ?? (getDeployments = new DelegateCommand(
+                        //execute
+                        () => Deployments = kubectlService.Kubectl(SSHArgs.GetDeployments),
+                        //can execute
+                        () => true
+                    ));
+
+        private DelegateCommand getServices;
+        public DelegateCommand GetServices => getServices ?? (getServices = new DelegateCommand(
+                        //execute
+                        () => Services = kubectlService.Kubectl(SSHArgs.GetServices),
+                        //can execute
+                        () => true
+                    ));
+
+        private DelegateCommand getNamespaces;
+        public DelegateCommand GetNamespaces => getNamespaces ?? (getNamespaces = new DelegateCommand(
+                        //execute
+                        () => Namespaces = kubectlService.Kubectl(SSHArgs.GetNamespaces),
+                        //can execute
+                        () => true
+                    ));
+
+        private DelegateCommand getConnectivity;
+        public DelegateCommand GetConnectivity => getConnectivity ?? (getConnectivity = new DelegateCommand(
+                        //execute
+                        () => Connection = kubectlService.Kubectl(SSHArgs.CheckConnectivity),
+                        //can execute
+                        () => true
+                    ));
 
         private string clusterInfo;
         public string ClusterInfo
@@ -53,6 +97,8 @@ namespace kubectlWrapper.Shared.ViewModels
         public string Nodes
         {
             get { return nodes; }
+
+            [MethodImpl(MethodImplOptions.Synchronized)]
             set
             {
                 nodes = value;
@@ -116,50 +162,6 @@ namespace kubectlWrapper.Shared.ViewModels
                 connection = value;
                 RaisePropertyChanged(nameof(Connection));
             }
-        }
-
-
-        public bool Connectivity()
-        {
-            Connection = kubectlService.Kubectl(SSHArgs.CheckConnectivity);
-            return true;
-        }
-
-        //public bool GetNodes()
-        //{
-        //    Nodes = kubectlService.Kubectl(SSHArgs.GetNodes);
-        //    return true;
-        //}
-
-        public bool GetClusterInfo()
-        {
-            ClusterInfo = kubectlService.Kubectl(SSHArgs.GetConfig);
-            return true;
-        }
-
-        public bool GetDeployments()
-        {
-            Deployments = kubectlService.Kubectl(SSHArgs.GetDeployments);
-            return true;
-        }
-
-
-        public bool GetServices()
-        {
-            Services = kubectlService.Kubectl(SSHArgs.GetServices);
-            return true;
-        }
-
-        public bool GetPods()
-        {
-            Pods = kubectlService.Kubectl(SSHArgs.GetPods);
-            return true;
-        }
-
-        public bool GetNamespaces()
-        {
-            Namespaces = kubectlService.Kubectl(SSHArgs.GetNamespaces);
-            return true;
         }
 
     }

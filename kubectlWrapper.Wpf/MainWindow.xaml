@@ -10,6 +10,5 @@
         <Button Content="Get Nodes"
                 Command="{Binding GetNodes}"/>
         <TextBlock Text="{Binding Nodes}"/>
-        
     </StackPanel>
 </Window>

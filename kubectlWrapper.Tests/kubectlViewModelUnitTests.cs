@@ -69,7 +69,7 @@ kube-system       Active   32h");
         public void kubectl_check_connectivity()
         {
             vm.Connection = string.Empty;
-            var t = vm.Connectivity();
+            vm.GetConnectivity.Execute();
 
             vm.Connection.Should().NotBeNullOrEmpty().And.NotContain("Error");
         }
@@ -78,7 +78,7 @@ kube-system       Active   32h");
         public void kubectl_get_cluster_info()
         {
             vm.ClusterInfo = string.Empty;
-            var t = vm.GetClusterInfo();
+            vm.GetClusterInfo.Execute();
 
             vm.ClusterInfo.Should().NotBeNullOrEmpty();
         }
@@ -87,7 +87,7 @@ kube-system       Active   32h");
         public void kubectl_gets_nodes()
         {
             vm.Nodes = string.Empty;
-            var t = vm.GetNodes();
+            vm.GetNodes.Execute();
 
             vm.Nodes.Should().NotBeNullOrEmpty();
         }
@@ -97,7 +97,7 @@ kube-system       Active   32h");
         public void kubectl_get_deployments()
         {
             vm.Deployments = string.Empty;
-            var t = vm.GetDeployments();
+            vm.GetDeployments.Execute();
 
             vm.Deployments.Should().NotBeNullOrEmpty();
         }
@@ -106,7 +106,7 @@ kube-system       Active   32h");
         public void kubectl_get_services()
         {
             vm.Services = string.Empty;
-            var t = vm.GetServices();
+            vm.GetServices.Execute();
 
             vm.Services.Should().NotBeNullOrEmpty();
         }
@@ -115,7 +115,7 @@ kube-system       Active   32h");
         public void kubectl_get_pods()
         {
             vm.Pods = string.Empty;
-            var t = vm.GetPods();
+            vm.GetPods.Execute();
 
             vm.Pods.Should().NotBeNullOrEmpty();
         }
@@ -123,7 +123,7 @@ kube-system       Active   32h");
         public void kubectl_get_namespaces()
         {
             vm.Namespaces = string.Empty;
-            var t = vm.GetNamespaces();
+            vm.GetNamespaces.Execute();
 
             vm.Namespaces.Should().NotBeNullOrEmpty();
         }

@@ -11,15 +11,15 @@ namespace kubectlWrapper.Console
         static void Main(string[] args)
         {
             var kubectl = new KubectlViewModel(new SshKube());
-            var b = kubectl.Connectivity();
+            kubectl.GetConnectivity.Execute();
             System.Console.WriteLine("Connection Status: \n" + kubectl.Connection);
 
-            kubectl.GetClusterInfo();
-            kubectl.GetNodes();
-            kubectl.GetPods();
-            kubectl.GetDeployments();
-            kubectl.GetServices();
-            kubectl.GetNamespaces();
+            kubectl.GetClusterInfo.Execute();
+            kubectl.GetNodes.Execute();
+            kubectl.GetPods.Execute();
+            kubectl.GetDeployments.Execute();
+            kubectl.GetServices.Execute();
+            kubectl.GetNamespaces.Execute();
 
 
             System.Console.WriteLine("Cluster info: \n" + kubectl.ClusterInfo);
