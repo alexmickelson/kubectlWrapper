@@ -1,5 +1,6 @@
 ﻿using kubectlWrapper.Shared.Data;
 using kubectlWrapper.Shared.Services;
+using Prism.Commands;
 using Prism.Mvvm;
 
 namespace kubectlWrapper.Shared.ViewModels
@@ -11,6 +12,19 @@ namespace kubectlWrapper.Shared.ViewModels
         public KubectlViewModel(IKubeService KubectlService)
         {
             kubectlService = KubectlService;
+            GetNodes = new DelegateCommand(
+                        //execute
+                        () => Nodes = kubectlService.Kubectl(SSHArgs.GetNodes),
+                        //can execute
+                        () => true
+                    );
+        }
+
+        private DelegateCommand getNodes;
+        public DelegateCommand GetNodes
+        {
+            get { return getNodes; }
+            set { getNodes = value; }
         }
 
         private string clusterInfo;
@@ -111,11 +125,11 @@ namespace kubectlWrapper.Shared.ViewModels
             return true;
         }
 
-        public bool GetNodes()
-        {
-            Nodes = kubectlService.Kubectl(SSHArgs.GetNodes);
-            return true;
-        }
+        //public bool GetNodes()
+        //{
+        //    Nodes = kubectlService.Kubectl(SSHArgs.GetNodes);
+        //    return true;
+        //}
 
         public bool GetClusterInfo()
         {

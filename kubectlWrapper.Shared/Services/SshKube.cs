@@ -11,7 +11,7 @@ namespace kubectlWrapper.Shared.Services
     {
         public string Kubectl(string sshArgs)
         {
-            var executable = @"C:\Windows\System32\OpenSSH\ssh.exe";
+            var executable = @"C:\Windows\SysNative\OpenSSH\ssh.exe";
             if (!File.Exists(executable))
             {
                 throw new FileNotFoundException("cannot find executable: " + executable);

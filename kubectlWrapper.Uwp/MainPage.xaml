@@ -10,7 +10,7 @@
 
     <StackPanel>
         <Button Content="Get Nodes"
-                Click="{x:Bind ViewModel.GetNodes}"/>
+                Command="{x:Bind ViewModel.GetNodes}"/>
         <TextBlock Text="{x:Bind ViewModel.Nodes, Mode=TwoWay}"/>
 
     </StackPanel>
