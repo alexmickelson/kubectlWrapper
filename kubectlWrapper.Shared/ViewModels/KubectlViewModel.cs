@@ -18,7 +18,10 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getNodes;
         public DelegateCommand GetNodes => getNodes ?? (getNodes = new DelegateCommand(
                         //execute
-                        async () => Nodes = await kubectlService.Kubectl(SSHArgs.GetNodes),
+                        async () => {
+                            Nodes = "Getting Nodes";
+                            Nodes = await kubectlService.Kubectl(SSHArgs.GetNodes);
+                            },
                         //can execute
                         () => true
                     ));
@@ -26,7 +29,10 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getClusterInfo;
         public DelegateCommand GetClusterInfo => getClusterInfo ?? (getClusterInfo = new DelegateCommand(
                         //execute
-                        async () => ClusterInfo = await kubectlService.Kubectl(SSHArgs.GetConfig),
+                        async () => {
+                            ClusterInfo = "Getting Cluster Info";
+                            ClusterInfo = await kubectlService.Kubectl(SSHArgs.GetConfig);
+                            },
                         //can execute
                         () => true
                     ));
@@ -34,7 +40,10 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getPods;
         public DelegateCommand GetPods => getPods ?? (getPods = new DelegateCommand(
                         //execute
-                        async () => Pods = await kubectlService.Kubectl(SSHArgs.GetPods),
+                        async () => {
+                            Pods = "Getting Pods";
+                            Pods = await kubectlService.Kubectl(SSHArgs.GetPods);
+                            },
                         //can execute
                         () => true
                     ));
@@ -42,7 +51,10 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getDeployments;
         public DelegateCommand GetDeployments => getDeployments ?? (getDeployments = new DelegateCommand(
                         //execute
-                        async () => Deployments = await kubectlService.Kubectl(SSHArgs.GetDeployments),
+                        async () => {
+                            Deployments = "Getting Deployments";
+                            Deployments = await kubectlService.Kubectl(SSHArgs.GetDeployments);
+                            },
                         //can execute
                         () => true
                     ));
@@ -50,7 +62,10 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getServices;
         public DelegateCommand GetServices => getServices ?? (getServices = new DelegateCommand(
                         //execute
-                        async () => Services = await kubectlService.Kubectl(SSHArgs.GetServices),
+                        async () => {
+                            Services = "Getting Services";
+                            Services = await kubectlService.Kubectl(SSHArgs.GetServices);
+                            },
                         //can execute
                         () => true
                     ));
@@ -58,7 +73,11 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getNamespaces;
         public DelegateCommand GetNamespaces => getNamespaces ?? (getNamespaces = new DelegateCommand(
                         //execute
-                        async () => Namespaces = await kubectlService.Kubectl(SSHArgs.GetNamespaces),
+                        async () =>
+                        {
+                            Namespaces = "Getting Namespaces";
+                            Namespaces = await kubectlService.Kubectl(SSHArgs.GetNamespaces);
+                        },
                         //can execute
                         () => true
                     ));
@@ -66,7 +85,11 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getConnectivity;
         public DelegateCommand GetConnectivity => getConnectivity ?? (getConnectivity = new DelegateCommand(
                         //execute
-                        async () => Connection = await kubectlService.Kubectl(SSHArgs.CheckConnectivity),
+                        async () =>
+                        {
+                            Connection = "Getting Connection";
+                            Connection = await kubectlService.Kubectl(SSHArgs.CheckConnectivity);
+                        },
                         //can execute
                         () => true
                     ));
