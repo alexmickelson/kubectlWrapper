@@ -18,7 +18,7 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getNodes;
         public DelegateCommand GetNodes => getNodes ?? (getNodes = new DelegateCommand(
                         //execute
-                        () => Nodes = kubectlService.Kubectl(SSHArgs.GetNodes),
+                        async () => Nodes = await kubectlService.Kubectl(SSHArgs.GetNodes),
                         //can execute
                         () => true
                     ));
@@ -26,7 +26,7 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getClusterInfo;
         public DelegateCommand GetClusterInfo => getClusterInfo ?? (getClusterInfo = new DelegateCommand(
                         //execute
-                        () => ClusterInfo = kubectlService.Kubectl(SSHArgs.GetConfig),
+                        async () => ClusterInfo = await kubectlService.Kubectl(SSHArgs.GetConfig),
                         //can execute
                         () => true
                     ));
@@ -34,7 +34,7 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getPods;
         public DelegateCommand GetPods => getPods ?? (getPods = new DelegateCommand(
                         //execute
-                        () => Pods = kubectlService.Kubectl(SSHArgs.GetPods),
+                        async () => Pods = await kubectlService.Kubectl(SSHArgs.GetPods),
                         //can execute
                         () => true
                     ));
@@ -42,7 +42,7 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getDeployments;
         public DelegateCommand GetDeployments => getDeployments ?? (getDeployments = new DelegateCommand(
                         //execute
-                        () => Deployments = kubectlService.Kubectl(SSHArgs.GetDeployments),
+                        async () => Deployments = await kubectlService.Kubectl(SSHArgs.GetDeployments),
                         //can execute
                         () => true
                     ));
@@ -50,7 +50,7 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getServices;
         public DelegateCommand GetServices => getServices ?? (getServices = new DelegateCommand(
                         //execute
-                        () => Services = kubectlService.Kubectl(SSHArgs.GetServices),
+                        async () => Services = await kubectlService.Kubectl(SSHArgs.GetServices),
                         //can execute
                         () => true
                     ));
@@ -58,7 +58,7 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getNamespaces;
         public DelegateCommand GetNamespaces => getNamespaces ?? (getNamespaces = new DelegateCommand(
                         //execute
-                        () => Namespaces = kubectlService.Kubectl(SSHArgs.GetNamespaces),
+                        async () => Namespaces = await kubectlService.Kubectl(SSHArgs.GetNamespaces),
                         //can execute
                         () => true
                     ));
@@ -66,7 +66,7 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand getConnectivity;
         public DelegateCommand GetConnectivity => getConnectivity ?? (getConnectivity = new DelegateCommand(
                         //execute
-                        () => Connection = kubectlService.Kubectl(SSHArgs.CheckConnectivity),
+                        async () => Connection = await kubectlService.Kubectl(SSHArgs.CheckConnectivity),
                         //can execute
                         () => true
                     ));
@@ -97,7 +97,6 @@ namespace kubectlWrapper.Shared.ViewModels
         public string Nodes
         {
             get { return nodes; }
-
             [MethodImpl(MethodImplOptions.Synchronized)]
             set
             {
@@ -129,10 +128,10 @@ namespace kubectlWrapper.Shared.ViewModels
         }
 
         private string pods;
-
         public string Pods
         {
             get { return pods; }
+            [MethodImpl(MethodImplOptions.Synchronized)]
             set
             {
                 pods = value;

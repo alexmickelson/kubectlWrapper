@@ -4,6 +4,6 @@ namespace kubectlWrapper.Shared.Services
 {
     public interface IKubeService
     {
-        string Kubectl(string sshArgs);
+        Task<string> Kubectl(string sshArgs);
     }
 }

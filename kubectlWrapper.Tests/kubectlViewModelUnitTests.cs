@@ -22,8 +22,8 @@ namespace kubectlWrapper.Tests
         public void moq_service()
         {
             var moq = new Mock<IKubeService>();
-            moq.Setup(k => k.Kubectl(SSHArgs.CheckConnectivity)).Returns("connected");
-            moq.Setup(k => k.Kubectl(SSHArgs.GetConfig)).Returns(@"apiVersion: v1
+            moq.Setup(k => k.Kubectl(SSHArgs.CheckConnectivity)).Returns(Task.FromResult("connected"));
+            moq.Setup(k => k.Kubectl(SSHArgs.GetConfig)).Returns(Task.FromResult(@"apiVersion: v1
 clusters:
 -cluster:
     certificate - authority - data: DATA + OMITTED
@@ -41,25 +41,25 @@ preferences: { }
             -name: kubernetes - admin
   user:
             client - certificate - data: REDACTED
-    client - key - data: REDACTED");
-            moq.Setup(k => k.Kubectl(SSHArgs.GetNodes)).Returns(@"NAME            STATUS   ROLES    AGE   VERSION
+    client - key - data: REDACTED"));
+            moq.Setup(k => k.Kubectl(SSHArgs.GetNodes)).Returns(Task.FromResult(@"NAME            STATUS   ROLES    AGE   VERSION
 sudo.snow.edu   Ready    master   32h   v1.15.3
 sudoclub2       Ready    <none>   32h   v1.15.3
-sudoclub3       Ready    <none>   32h   v1.15.3");
-            moq.Setup(k => k.Kubectl(SSHArgs.GetPods)).Returns(@"NAME                                  READY   STATUS    RESTARTS   AGE
+sudoclub3       Ready    <none>   32h   v1.15.3"));
+            moq.Setup(k => k.Kubectl(SSHArgs.GetPods)).Returns(Task.FromResult(@"NAME                                  READY   STATUS    RESTARTS   AGE
 sudonet-deployment-55878cd4b6-9f59n   1/1     Running   0          31h
 sudonet-deployment-55878cd4b6-gtcmq   1/1     Running   0          31h
-sudonet-deployment-55878cd4b6-kn64q   1/1     Running   0          31h");
-            moq.Setup(k => k.Kubectl(SSHArgs.GetDeployments)).Returns(@"NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
-sudonet-deployment   3/3     3            3           31h");
-            moq.Setup(k => k.Kubectl(SSHArgs.GetServices)).Returns(@"NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+sudonet-deployment-55878cd4b6-kn64q   1/1     Running   0          31h"));
+            moq.Setup(k => k.Kubectl(SSHArgs.GetDeployments)).Returns(Task.FromResult(@"NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+sudonet-deployment   3/3     3            3           31h"));
+            moq.Setup(k => k.Kubectl(SSHArgs.GetServices)).Returns(Task.FromResult(@"NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
 kubernetes        ClusterIP   10.96.0.1       <none>        443/TCP                      31h
-sudonet-service   NodePort    10.96.130.143   <none>        80:30180/TCP,443:31443/TCP   31h");
-            moq.Setup(k => k.Kubectl(SSHArgs.GetNamespaces)).Returns(@"NAME              STATUS   AGE
+sudonet-service   NodePort    10.96.130.143   <none>        80:30180/TCP,443:31443/TCP   31h"));
+            moq.Setup(k => k.Kubectl(SSHArgs.GetNamespaces)).Returns(Task.FromResult(@"NAME              STATUS   AGE
 default           Active   32h
 kube-node-lease   Active   32h
 kube-public       Active   32h
-kube-system       Active   32h");
+kube-system       Active   32h"));
             moqKube = moq.Object;
 
             vm = new KubectlViewModel(moqKube);
