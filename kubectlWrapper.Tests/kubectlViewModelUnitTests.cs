@@ -1,5 +1,8 @@
 ﻿using FluentAssertions;
+using kubectlWrapper.Shared.Data;
+using kubectlWrapper.Shared.Services;
 using kubectlWrapper.Shared.ViewModels;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -11,13 +14,71 @@ namespace kubectlWrapper.Tests
 {
     class kubectlViewModelUnitTests
     {
+        public IKubeService moqKube { get; set; }
+
+        private KubectlViewModel vm;
+
+        [SetUp]
+        public void moq_service()
+        {
+            var moq = new Mock<IKubeService>();
+            moq.Setup(k => k.Kubectl(SSHArgs.CheckConnectivity)).Returns("connected");
+            moq.Setup(k => k.Kubectl(SSHArgs.GetConfig)).Returns(@"apiVersion: v1
+clusters:
+-cluster:
+    certificate - authority - data: DATA + OMITTED
+    server: https://144.17.10.175:6443
+  name: kubernetes
+contexts:
+-context:
+    cluster: kubernetes
+    user: kubernetes - admin
+  name: kubernetes - admin@kubernetes
+current - context: kubernetes - admin@kubernetes
+kind: Config
+preferences: { }
+        users:
+            -name: kubernetes - admin
+  user:
+            client - certificate - data: REDACTED
+    client - key - data: REDACTED");
+            moq.Setup(k => k.Kubectl(SSHArgs.GetNodes)).Returns(@"NAME            STATUS   ROLES    AGE   VERSION
+sudo.snow.edu   Ready    master   32h   v1.15.3
+sudoclub2       Ready    <none>   32h   v1.15.3
+sudoclub3       Ready    <none>   32h   v1.15.3");
+            moq.Setup(k => k.Kubectl(SSHArgs.GetPods)).Returns(@"NAME                                  READY   STATUS    RESTARTS   AGE
+sudonet-deployment-55878cd4b6-9f59n   1/1     Running   0          31h
+sudonet-deployment-55878cd4b6-gtcmq   1/1     Running   0          31h
+sudonet-deployment-55878cd4b6-kn64q   1/1     Running   0          31h");
+            moq.Setup(k => k.Kubectl(SSHArgs.GetDeployments)).Returns(@"NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+sudonet-deployment   3/3     3            3           31h");
+            moq.Setup(k => k.Kubectl(SSHArgs.GetServices)).Returns(@"NAME              TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+kubernetes        ClusterIP   10.96.0.1       <none>        443/TCP                      31h
+sudonet-service   NodePort    10.96.130.143   <none>        80:30180/TCP,443:31443/TCP   31h");
+            moq.Setup(k => k.Kubectl(SSHArgs.GetNamespaces)).Returns(@"NAME              STATUS   AGE
+default           Active   32h
+kube-node-lease   Active   32h
+kube-public       Active   32h
+kube-system       Active   32h");
+            moqKube = moq.Object;
+
+            vm = new KubectlViewModel(moqKube);
+        }
+
+        [Test]
+        public void kubectl_check_connectivity()
+        {
+            vm.Connection = string.Empty;
+            var t = vm.Connectivity();
+
+            vm.Connection.Should().NotBeNullOrEmpty().And.NotContain("Error");
+        }
+
         [Test]
         public void kubectl_get_cluster_info()
         {
-            var vm = new KubectlViewModel();
             vm.ClusterInfo = string.Empty;
             var t = vm.GetClusterInfo();
-            t.Wait();
 
             vm.ClusterInfo.Should().NotBeNullOrEmpty();
         }
@@ -25,10 +86,8 @@ namespace kubectlWrapper.Tests
         [Test]
         public void kubectl_gets_nodes()
         {
-            var vm = new KubectlViewModel();
             vm.Nodes = string.Empty;
             var t = vm.GetNodes();
-            t.Wait();
 
             vm.Nodes.Should().NotBeNullOrEmpty();
         }
@@ -37,10 +96,8 @@ namespace kubectlWrapper.Tests
         [Test]
         public void kubectl_get_deployments()
         {
-            var vm = new KubectlViewModel();
             vm.Deployments = string.Empty;
-            var t=vm.GetDeployments();
-            t.Wait();
+            var t = vm.GetDeployments();
 
             vm.Deployments.Should().NotBeNullOrEmpty();
         }
@@ -48,10 +105,8 @@ namespace kubectlWrapper.Tests
         [Test]
         public void kubectl_get_services()
         {
-            var vm = new KubectlViewModel();
             vm.Services = string.Empty;
             var t = vm.GetServices();
-            t.Wait();
 
             vm.Services.Should().NotBeNullOrEmpty();
         }
@@ -59,39 +114,20 @@ namespace kubectlWrapper.Tests
         [Test]
         public void kubectl_get_pods()
         {
-            var vm = new KubectlViewModel();
             vm.Pods = string.Empty;
             var t = vm.GetPods();
-            t.Wait();
 
             vm.Pods.Should().NotBeNullOrEmpty();
         }
         [Test]
         public void kubectl_get_namespaces()
         {
-            var vm = new KubectlViewModel();
             vm.Namespaces = string.Empty;
             var t = vm.GetNamespaces();
-            t.Wait();
 
             vm.Namespaces.Should().NotBeNullOrEmpty();
         }
 
-        [Test]
-        public void bad_command_throws_error()
-        {
-            var vm = new KubectlViewModel();
-            var p = new Process();
-            vm.Error = string.Empty;
-            p.StartInfo.FileName = "ToTalyNotACoMMAND";
-            Action act = () => {
-                var t = vm.RunProcessAsync(p);
-                t.Wait();
-            };
-
-            act.Should().Throw<Exception>();
-
-        }
 
 
     }

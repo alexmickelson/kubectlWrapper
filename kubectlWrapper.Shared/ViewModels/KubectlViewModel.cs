@@ -1,15 +1,17 @@
-﻿using GalaSoft.MvvmLight;
-using kubectlWrapper.Shared.Data;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using kubectlWrapper.Shared.Data;
+using kubectlWrapper.Shared.Services;
+using Prism.Mvvm;
 
 namespace kubectlWrapper.Shared.ViewModels
 {
-    public class KubectlViewModel : ViewModelBase
+    public class KubectlViewModel : BindableBase
     {
+
+        private IKubeService kubectlService;
+        public KubectlViewModel(IKubeService KubectlService)
+        {
+            kubectlService = KubectlService;
+        }
 
         private string clusterInfo;
         public string ClusterInfo
@@ -18,7 +20,7 @@ namespace kubectlWrapper.Shared.ViewModels
             set
             {
                 clusterInfo = value;
-                RaisePropertyChanged(nameof(Nodes));
+                RaisePropertyChanged(nameof(ClusterInfo));
             }
         }
 
@@ -51,7 +53,7 @@ namespace kubectlWrapper.Shared.ViewModels
             set
             {
                 deployments = value;
-                RaisePropertyChanged(nameof(Error));
+                RaisePropertyChanged(nameof(Deployments));
             }
         }
 
@@ -62,7 +64,7 @@ namespace kubectlWrapper.Shared.ViewModels
             set
             {
                 services = value;
-                RaisePropertyChanged(nameof(Error));
+                RaisePropertyChanged(nameof(Services));
             }
         }
 
@@ -74,7 +76,7 @@ namespace kubectlWrapper.Shared.ViewModels
             set
             {
                 pods = value;
-                RaisePropertyChanged(nameof(Error));
+                RaisePropertyChanged(nameof(Pods));
             }
         }
 
@@ -86,100 +88,65 @@ namespace kubectlWrapper.Shared.ViewModels
             set
             {
                 namespaces = value;
-                RaisePropertyChanged(nameof(Error));
+                RaisePropertyChanged(nameof(Namespaces));
+            }
+        }
+        
+        private string connection;
+
+        public string Connection
+        {
+            get { return connection; }
+            set
+            {
+                connection = value;
+                RaisePropertyChanged(nameof(Connection));
             }
         }
 
 
-        public async Task<bool> GetNodes()
+        public bool Connectivity()
         {
-            var p = new Process();
-            p.StartInfo.FileName = "ssh";
-            p.StartInfo.Arguments = SSHArgs.GetNodes;
-
-            Nodes = await RunProcessAsync(p);
+            Connection = kubectlService.Kubectl(SSHArgs.CheckConnectivity);
             return true;
         }
 
-        public async Task<bool> GetClusterInfo()
+        public bool GetNodes()
         {
-            var p = new Process();
-            p.StartInfo.FileName = "ssh";
-            p.StartInfo.Arguments = SSHArgs.GetConfig;
-
-            ClusterInfo = await RunProcessAsync(p);
+            Nodes = kubectlService.Kubectl(SSHArgs.GetNodes);
             return true;
         }
 
-        public async Task<bool> GetDeployments()
+        public bool GetClusterInfo()
         {
-            var p = new Process();
-            p.StartInfo.FileName = "ssh";
-            p.StartInfo.Arguments = SSHArgs.GetDeployments;
+            ClusterInfo = kubectlService.Kubectl(SSHArgs.GetConfig);
+            return true;
+        }
 
-            Deployments = await RunProcessAsync(p);
+        public bool GetDeployments()
+        {
+            Deployments = kubectlService.Kubectl(SSHArgs.GetDeployments);
             return true;
         }
 
 
-        public async Task<bool> GetServices()
+        public bool GetServices()
         {
-            var p = new Process();
-            p.StartInfo.FileName = "ssh";
-            p.StartInfo.Arguments = SSHArgs.GetServices;
-
-            Services = await RunProcessAsync(p);
+            Services = kubectlService.Kubectl(SSHArgs.GetServices);
             return true;
         }
 
-        public async Task<bool> GetPods()
+        public bool GetPods()
         {
-            var p = new Process();
-            p.StartInfo.FileName = "ssh";
-            p.StartInfo.Arguments = SSHArgs.GetPods;
-
-            Pods = await RunProcessAsync(p);
+            Pods = kubectlService.Kubectl(SSHArgs.GetPods);
             return true;
         }
 
-        public async Task<bool> GetNamespaces()
+        public bool GetNamespaces()
         {
-            var p = new Process();
-            p.StartInfo.FileName = "ssh";
-            p.StartInfo.Arguments = SSHArgs.GetNamespaces;
-
-            Namespaces = await RunProcessAsync(p);
+            Namespaces = kubectlService.Kubectl(SSHArgs.GetNamespaces);
             return true;
         }
 
-
-        public Task<string> RunProcessAsync(Process process)
-        {
-            var tcs = new TaskCompletionSource<string>();
-
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.RedirectStandardError = true;
-            process.EnableRaisingEvents = true;
-
-            process.Exited += (sender, args) =>
-            {
-                if (process.ExitCode != 0)
-                {
-                    Error = "The process did not exit correctly. \n" +
-                        "The corresponding error message was: \n" +
-                        process.StandardError.ReadToEnd();
-                    tcs.SetResult("Error running command " + process.StartInfo.FileName + " " + process.StartInfo.Arguments);
-                }
-                else
-                {
-                    tcs.SetResult(process.StandardOutput.ReadToEnd());
-
-                }
-                process.Dispose();
-            };
-            process.Start();
-            return tcs.Task;
-        }
     }
 }
