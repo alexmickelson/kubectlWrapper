@@ -11,6 +11,7 @@
         <Style TargetType="Button">
             <Setter Property="Margin" Value="5" />
             <Setter Property="Background" Value="#FF083760"/>
+            <Setter Property="Foreground" Value="#FFDDDDDD" />
         </Style>
         <Style TargetType="ScrollViewer">
             <Setter Property="Margin" Value="5" />
