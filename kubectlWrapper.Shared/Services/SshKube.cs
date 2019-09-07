@@ -1,4 +1,5 @@
-﻿using System;
+﻿using kubectlWrapper.Shared.Data;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +10,36 @@ namespace kubectlWrapper.Shared.Services
 {
     public class SshKube : IKubeService
     {
+        public string ApplyYaml(string yaml)
+        {
+            var executable = @"C:\Windows\SysNative\WindowsPowerShell\v1.0\powershell.exe";
+            if (!File.Exists(executable))
+            {
+                if (File.Exists(@"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"))
+                {
+                    executable = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
+                }
+                else
+                {
+                    throw new FileNotFoundException("cannot find executable: " + executable);
+                }
+            }
+
+            var process = new Process();
+                process.StartInfo.FileName = executable;
+                process.StartInfo.Arguments = "cat " + yaml + " | ssh " + SSHArgs.SSHDest + " kubectl apply -f -";
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.UseShellExecute = false;
+                process.EnableRaisingEvents = true;
+
+                process.Start();
+                process.WaitForExit();
+                var stdOut = process.StandardOutput.ReadToEnd();
+                return stdOut;
+
+        }
 
         public Task<string> Kubectl(string sshArgs)
         {

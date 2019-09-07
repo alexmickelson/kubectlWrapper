@@ -5,5 +5,6 @@ namespace kubectlWrapper.Shared.Services
     public interface IKubeService
     {
         Task<string> Kubectl(string sshArgs);
+        string ApplyYaml(string yaml);
     }
 }

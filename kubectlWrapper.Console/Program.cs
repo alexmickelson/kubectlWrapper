@@ -11,7 +11,7 @@ namespace kubectlWrapper.Console
     {
         static void Main(string[] args)
         {
-            var kubectl = new KubectlViewModel(new SshKube());
+            var kubectl = new KubectlViewModel(new SshKube(), new WindowsFileService());
 
             kubectl.GetClusterInfo.Execute();
             kubectl.GetNodes.Execute();

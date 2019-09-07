@@ -2,6 +2,8 @@
 using kubectlWrapper.Shared.Services;
 using Prism.Commands;
 using Prism.Mvvm;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
 namespace kubectlWrapper.Shared.ViewModels
@@ -9,10 +11,14 @@ namespace kubectlWrapper.Shared.ViewModels
     public class KubectlViewModel : BindableBase
     {
 
-        private IKubeService kubectlService;
-        public KubectlViewModel(IKubeService KubectlService)
+        private IFileService Fileservice { get; }
+        private IKubeService KubectlService;
+        public KubectlViewModel(IKubeService KubectlService,
+                                IFileService fileservice)
         {
-            kubectlService = KubectlService;
+            this.KubectlService = KubectlService;
+            Fileservice = fileservice;
+            SelectedFile = null;
         }
 
         private DelegateCommand getNodes;
@@ -20,7 +26,7 @@ namespace kubectlWrapper.Shared.ViewModels
                         //execute
                         async () => {
                             Nodes = "Getting Nodes";
-                            Nodes = await kubectlService.Kubectl(SSHArgs.GetNodes);
+                            Nodes = await KubectlService.Kubectl(SSHArgs.GetNodes);
                             },
                         //can execute
                         () => true
@@ -31,7 +37,7 @@ namespace kubectlWrapper.Shared.ViewModels
                         //execute
                         async () => {
                             ClusterInfo = "Getting Cluster Info";
-                            ClusterInfo = await kubectlService.Kubectl(SSHArgs.GetConfig);
+                            ClusterInfo = await KubectlService.Kubectl(SSHArgs.GetConfig);
                             },
                         //can execute
                         () => true
@@ -42,7 +48,7 @@ namespace kubectlWrapper.Shared.ViewModels
                         //execute
                         async () => {
                             Pods = "Getting Pods";
-                            Pods = await kubectlService.Kubectl(SSHArgs.GetPods);
+                            Pods = await KubectlService.Kubectl(SSHArgs.GetPods);
                             },
                         //can execute
                         () => true
@@ -53,7 +59,7 @@ namespace kubectlWrapper.Shared.ViewModels
                         //execute
                         async () => {
                             Deployments = "Getting Deployments";
-                            Deployments = await kubectlService.Kubectl(SSHArgs.GetDeployments);
+                            Deployments = await KubectlService.Kubectl(SSHArgs.GetDeployments);
                             },
                         //can execute
                         () => true
@@ -64,7 +70,7 @@ namespace kubectlWrapper.Shared.ViewModels
                         //execute
                         async () => {
                             Services = "Getting Services";
-                            Services = await kubectlService.Kubectl(SSHArgs.GetServices);
+                            Services = await KubectlService.Kubectl(SSHArgs.GetServices);
                             },
                         //can execute
                         () => true
@@ -76,7 +82,7 @@ namespace kubectlWrapper.Shared.ViewModels
                         async () =>
                         {
                             Namespaces = "Getting Namespaces";
-                            Namespaces = await kubectlService.Kubectl(SSHArgs.GetNamespaces);
+                            Namespaces = await KubectlService.Kubectl(SSHArgs.GetNamespaces);
                         },
                         //can execute
                         () => true
@@ -88,11 +94,86 @@ namespace kubectlWrapper.Shared.ViewModels
                         async () =>
                         {
                             Connection = "Getting Connection";
-                            Connection = await kubectlService.Kubectl(SSHArgs.CheckConnectivity);
+                            Connection = await KubectlService.Kubectl(SSHArgs.CheckConnectivity);
                         },
                         //can execute
                         () => true
                     ));
+
+        private DelegateCommand selectDirectory;
+        public DelegateCommand SelectDirectory => selectDirectory ?? (selectDirectory = new DelegateCommand(
+                        //execute
+                        async () =>
+                        {
+                            FileList = new ObservableCollection<string>(Fileservice.SelectDirectory());
+                        },
+                        //can execute
+                        () => true
+                    ));
+        
+
+        private DelegateCommand applyYaml;
+        public DelegateCommand ApplyYaml => applyYaml ?? (applyYaml = new DelegateCommand(
+                        //execute
+                        () =>
+                        {
+                            ApplyYamlStatus = KubectlService.ApplyYaml(SelectedFile);
+                            //if (string.IsNullOrEmpty(SelectedFileContents))
+                            //{
+                            //}
+                        }
+                        //},
+                        ////can execute
+                        //() => string.IsNullOrEmpty(SelectedFileContents)
+                    ));
+
+        private ObservableCollection<string> fileList;
+        public ObservableCollection<string> FileList
+        {
+            get { return fileList; }
+            set
+            {
+                fileList = value;
+                RaisePropertyChanged(nameof(FileList));
+            }
+        }
+
+        private string applyYamlStatus;
+        public string ApplyYamlStatus
+        {
+            get { return applyYamlStatus; }
+            set
+            {
+                applyYamlStatus = value;
+                RaisePropertyChanged(nameof(ApplyYamlStatus));
+            }
+        }
+
+        private string selectedFile;
+        public string SelectedFile
+        {
+            get { return selectedFile; }
+            set
+            {
+                if (selectedFile != value)
+                {
+                    selectedFile = value;
+                    SelectedFileContents = Fileservice.ReadFile(selectedFile);
+                    RaisePropertyChanged(nameof(SelectedFile));
+                }
+            }
+        }
+
+        private string selectedFileContents;
+        public string SelectedFileContents
+        {
+            get { return selectedFileContents; }
+            set
+            {
+                selectedFileContents = value;
+                RaisePropertyChanged(nameof(SelectedFileContents));
+            }
+        }
 
         private string clusterInfo;
         public string ClusterInfo
@@ -154,7 +235,6 @@ namespace kubectlWrapper.Shared.ViewModels
         public string Pods
         {
             get { return pods; }
-            [MethodImpl(MethodImplOptions.Synchronized)]
             set
             {
                 pods = value;
@@ -163,7 +243,6 @@ namespace kubectlWrapper.Shared.ViewModels
         }
 
         private string namespaces;
-
         public string Namespaces
         {
             get { return namespaces; }
@@ -175,7 +254,6 @@ namespace kubectlWrapper.Shared.ViewModels
         }
         
         private string connection;
-
         public string Connection
         {
             get { return connection; }
