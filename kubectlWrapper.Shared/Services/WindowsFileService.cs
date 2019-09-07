@@ -18,7 +18,8 @@ namespace kubectlWrapper.Shared.Services
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             dialog.InitialDirectory = @"C:\Users\Alex\SudoNet\kube";
             dialog.IsFolderPicker = true;
-
+            dialog.Multiselect = false;
+            
             if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
             {
                 return new List<string>();

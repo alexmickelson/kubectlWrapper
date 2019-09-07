@@ -10,22 +10,24 @@ namespace kubectlWrapper.Shared.Services
 {
     public class SshKube : IKubeService
     {
-        public string ApplyYaml(string yaml)
+        public Task<string> ApplyYaml(string yaml)
         {
-            var executable = @"C:\Windows\SysNative\WindowsPowerShell\v1.0\powershell.exe";
-            if (!File.Exists(executable))
+            return Task.Run(() =>
             {
-                if (File.Exists(@"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"))
+                var executable = @"C:\Windows\SysNative\WindowsPowerShell\v1.0\powershell.exe";
+                if (!File.Exists(executable))
                 {
-                    executable = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
+                    if (File.Exists(@"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"))
+                    {
+                        executable = @"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe";
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException("cannot find executable: " + executable);
+                    }
                 }
-                else
-                {
-                    throw new FileNotFoundException("cannot find executable: " + executable);
-                }
-            }
 
-            var process = new Process();
+                var process = new Process();
                 process.StartInfo.FileName = executable;
                 process.StartInfo.Arguments = "cat " + yaml + " | ssh " + SSHArgs.SSHDest + " kubectl apply -f -";
                 process.StartInfo.CreateNoWindow = true;
@@ -37,8 +39,13 @@ namespace kubectlWrapper.Shared.Services
                 process.Start();
                 process.WaitForExit();
                 var stdOut = process.StandardOutput.ReadToEnd();
+                var stdError = process.StandardError.ReadToEnd();
+                if (!string.IsNullOrEmpty(stdError))
+                {
+                    return stdOut + "\n" + stdError;
+                }
                 return stdOut;
-
+            });
         }
 
         public Task<string> Kubectl(string sshArgs)

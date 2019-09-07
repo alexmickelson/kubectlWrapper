@@ -5,18 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:kubectlWrapper.Wpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1000">
+        Title="MainWindow" Height="700" Width="1000"
+        Background="Black">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="5" />
+            <Setter Property="Background" Value="#FF083760"/>
         </Style>
         <Style TargetType="ScrollViewer">
             <Setter Property="Margin" Value="5" />
         </Style>
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="#FF3E494E" />
+            <Setter Property="Opacity" Value="0.5"/>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#FFDDDDDD" />
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -24,30 +34,48 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <TextBlock Text="Apply YAML Files"/>
+            <TextBlock Text="Apply YAML Files"
+                       FontWeight="Heavy"
+                       FontSize="15"
+                       HorizontalAlignment="Center"/>
             <Button Command="{Binding SelectDirectory}"
-                    Content="Select Folder"/>
-            <ListView ItemsSource="{Binding FileList, Mode=OneWay}"
-                      SelectedItem="{Binding SelectedFile, Mode=TwoWay}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <TextBlock Text="{Binding SelectedFileContents}"/>
+                    Content="Select Folder"
+                    FontWeight="Bold"
+                    Padding="10"/>
+            <ScrollViewer MaxHeight="300">
+                <ListView ItemsSource="{Binding FileList, Mode=OneWay}"
+                      SelectedItem="{Binding SelectedFile, Mode=TwoWay}"
+                          Background="#FF474E56">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"
+                                       Foreground="#FFDDDDDD"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
+            
         </StackPanel>
-        <StackPanel Grid.Row="1"
+        
+            <ScrollViewer Grid.Row="1">
+            <TextBlock Text="{Binding SelectedFileContents}"
+                          Background="#FF474E56"/>
+            </ScrollViewer>
+        
+        <StackPanel Grid.Row="2"
                     Orientation="Horizontal">
-            <Button Content="Apply" 
-                    Command="{Binding ApplyYaml}"/>
-            <TextBlock Text="Status: " />
+            <Button Content="Apply Selected File" 
+                    Padding="20 5 20 5"
+                    Command="{Binding ApplyYaml}"
+                    IsEnabled="{Binding IsSelectedFile}"/>
             <TextBlock Text="{Binding ApplyYamlStatus}"/>
         </StackPanel>
         
+                
         <Grid Grid.Column="1"
-              Grid.RowSpan="2">
+              Grid.RowSpan="3">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -60,48 +88,57 @@
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
 
+            <TextBlock Text="View Cluster Status"
+                       FontWeight="Heavy"
+                       FontSize="15"
+                       HorizontalAlignment="Center"
+                       Grid.ColumnSpan="2"/>
+
+
             <Button Content="Get Nodes"
-                Command="{Binding GetNodes}"/>
+                    Grid.Row="1"
+                    Command="{Binding GetNodes}"/>
             <ScrollViewer Grid.Column="1"
-                      HorizontalScrollBarVisibility="Auto">
+                          Grid.Row="1"
+                          HorizontalScrollBarVisibility="Auto">
                 <TextBlock Text="{Binding Nodes}"/>
             </ScrollViewer>
-            <Button Grid.Row="1"
+            <Button Grid.Row="2"
                 Content="Get Pods"
                 Command="{Binding GetPods}"/>
-            <ScrollViewer Grid.Row="1" 
+            <ScrollViewer Grid.Row="2" 
                 Grid.Column="1"
                 HorizontalScrollBarVisibility="Auto">
                 <TextBlock Text="{Binding Pods}"/>
             </ScrollViewer>
-            <Button Grid.Row="2"
+            <Button Grid.Row="3"
                 Content="Get Deployments"
                 Command="{Binding GetDeployments}"/>
-            <ScrollViewer Grid.Row="2" 
+            <ScrollViewer Grid.Row="3" 
                 Grid.Column="1"
                 HorizontalScrollBarVisibility="Auto">
                 <TextBlock Text="{Binding Deployments}"/>
             </ScrollViewer>
-            <Button Grid.Row="3"
+            <Button Grid.Row="4"
                 Content="Get Services"
                 Command="{Binding GetServices}"/>
-            <ScrollViewer Grid.Row="3" 
+            <ScrollViewer Grid.Row="4" 
                 Grid.Column="1"
                 HorizontalScrollBarVisibility="Auto">
                 <TextBlock Text="{Binding Services}"/>
             </ScrollViewer>
-            <Button Grid.Row="4"
+            <Button Grid.Row="5"
                 Content="Get Namespaces"
                 Command="{Binding GetNamespaces}"/>
-            <ScrollViewer Grid.Row="4" 
+            <ScrollViewer Grid.Row="5" 
                 Grid.Column="1"
                 HorizontalScrollBarVisibility="Auto">
                 <TextBlock Text="{Binding Namespaces}"/>
             </ScrollViewer>
-            <Button Grid.Row="5"
+            <Button Grid.Row="6"
                 Content="Get Cluster Info"
                 Command="{Binding GetClusterInfo}"/>
-            <ScrollViewer Grid.Row="5" 
+            <ScrollViewer Grid.Row="6" 
                 Grid.Column="1"
                 HorizontalScrollBarVisibility="Auto">
                 <TextBlock Text="{Binding ClusterInfo}"/>

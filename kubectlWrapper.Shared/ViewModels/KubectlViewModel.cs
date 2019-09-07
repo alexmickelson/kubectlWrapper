@@ -115,16 +115,11 @@ namespace kubectlWrapper.Shared.ViewModels
         private DelegateCommand applyYaml;
         public DelegateCommand ApplyYaml => applyYaml ?? (applyYaml = new DelegateCommand(
                         //execute
-                        () =>
+                        async () =>
                         {
-                            ApplyYamlStatus = KubectlService.ApplyYaml(SelectedFile);
-                            //if (string.IsNullOrEmpty(SelectedFileContents))
-                            //{
-                            //}
+                            ApplyYamlStatus = "Applying YAML...";
+                            ApplyYamlStatus = await KubectlService.ApplyYaml(SelectedFile);
                         }
-                        //},
-                        ////can execute
-                        //() => string.IsNullOrEmpty(SelectedFileContents)
                     ));
 
         private ObservableCollection<string> fileList;
@@ -144,10 +139,12 @@ namespace kubectlWrapper.Shared.ViewModels
             get { return applyYamlStatus; }
             set
             {
-                applyYamlStatus = value;
+                applyYamlStatus = "Status: " +  value;
                 RaisePropertyChanged(nameof(ApplyYamlStatus));
             }
         }
+
+        public bool IsSelectedFile => !string.IsNullOrEmpty(SelectedFile);
 
         private string selectedFile;
         public string SelectedFile
@@ -159,7 +156,9 @@ namespace kubectlWrapper.Shared.ViewModels
                 {
                     selectedFile = value;
                     SelectedFileContents = Fileservice.ReadFile(selectedFile);
-                    RaisePropertyChanged(nameof(SelectedFile));
+                    RaisePropertyChanged();
+                    RaisePropertyChanged(nameof(IsSelectedFile));
+                    RaisePropertyChanged(nameof(ApplyYaml));
                 }
             }
         }
