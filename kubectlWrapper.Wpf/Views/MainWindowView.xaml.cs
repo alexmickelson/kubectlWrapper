@@ -1,20 +1,20 @@
 ﻿using kubectlWrapper.Shared.Services;
-using kubectlWrapper.Shared.ViewModels;
+using kubectlWrapper.Wpf.ViewModels;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Windows;
 
-namespace kubectlWrapper.Wpf
+namespace kubectlWrapper.Wpf.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindowView : Window
     {
 
-        public MainWindow()
+        public MainWindowView()
         {
             InitializeComponent();
-            this.DataContext = new KubectlViewModel(new SshKube(), new WindowsFileService());
+            //this.DataContext = new KubectlViewModel(new SshKube(), new WindowsFileService());
         }
 
     }
