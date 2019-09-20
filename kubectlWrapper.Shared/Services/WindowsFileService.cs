@@ -13,21 +13,18 @@ namespace kubectlWrapper.Shared.Services
             return System.IO.File.ReadAllText(location);
         }
 
-        public List<string> SelectDirectory()
+        public List<string> ReadDirectory(string directory)
         {
-            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            dialog.InitialDirectory = @"C:\Users\Alex\SudoNet\kube";
-            dialog.IsFolderPicker = true;
-            dialog.Multiselect = false;
-            
-            if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
+            if (Directory.Exists(directory))
             {
-                return new List<string>();
+                return new List<string>(Directory.GetFileSystemEntries(directory));
             }
-            var files = Directory.GetFiles(dialog.FileName);
-
-            return new List<string>(files);
-            //return "You selected: " + dialog.FileName;
+            else
+            {
+                return null;
+            }
         }
+
+
     }
 }

@@ -4,7 +4,7 @@ namespace kubectlWrapper.Shared.Services
 {
     public interface IFileService
     {
-        List<string> SelectDirectory();
+        List<string> ReadDirectory(string directory);
         string ReadFile(string location);
     }
 }

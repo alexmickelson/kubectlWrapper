@@ -10,21 +10,11 @@
         Title="MainWindow" Height="700" Width="1000"
         Background="Black">
     <Window.Resources>
-        <Style TargetType="Button">
-            <Setter Property="Margin" Value="5" />
-            <Setter Property="Background" Value="#FF083760"/>
-            <Setter Property="Foreground" Value="#FFDDDDDD" />
-        </Style>
-        <Style TargetType="ScrollViewer">
-            <Setter Property="Margin" Value="5" />
-        </Style>
-        <Style TargetType="ScrollBar">
-            <Setter Property="Background" Value="#FF3E494E" />
-            <Setter Property="Opacity" Value="0.5"/>
-        </Style>
-        <Style TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#FFDDDDDD" />
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/StyleDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>

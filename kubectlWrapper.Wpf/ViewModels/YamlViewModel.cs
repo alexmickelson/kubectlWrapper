@@ -1,4 +1,5 @@
-﻿using kubectlWrapper.Shared.Services;
+﻿using GuiSamples.Wpf;
+using kubectlWrapper.Shared.Services;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace kubectlWrapper.Wpf.ViewModels
 {
-    public class YamlViewModel : BindableBase
+    public class YamlViewModel : BindableDataErrorInfoBase
     {
         private IFileService Fileservice { get; }
         private IKubeService KubectlService;
@@ -20,29 +21,21 @@ namespace kubectlWrapper.Wpf.ViewModels
             this.KubectlService = KubectlService;
             Fileservice = fileservice;
             SelectedFile = null;
+            SelectedDirectory = @"C:\Users\Alex\SudoNet\kube";
         }
 
-        private DelegateCommand selectDirectory;
-        public DelegateCommand SelectDirectory => selectDirectory ?? (selectDirectory = new DelegateCommand(
-                        //execute
-                        async () =>
-                        {
-                            FileList = new ObservableCollection<string>(Fileservice.SelectDirectory());
-                        },
-                        //can execute
-                        () => true
-                    ));
+        private string selectedDirectory;
 
+        public string SelectedDirectory
+        {
+            get { return selectedDirectory; }
+            set {
+                selectedDirectory = value;
+                RaisePropertyChanged();
+                FileList = new ObservableCollection<string>(Fileservice.ReadDirectory(value));
+            }
+        }
 
-        private DelegateCommand applyYaml;
-        public DelegateCommand ApplyYaml => applyYaml ?? (applyYaml = new DelegateCommand(
-                        //execute
-                        async () =>
-                        {
-                            ApplyYamlStatus = "Applying YAML...";
-                            ApplyYamlStatus = await KubectlService.ApplyYaml(SelectedFile);
-                        }
-                    ));
 
         private ObservableCollection<string> fileList;
         public ObservableCollection<string> FileList
@@ -54,6 +47,17 @@ namespace kubectlWrapper.Wpf.ViewModels
                 RaisePropertyChanged(nameof(FileList));
             }
         }
+
+
+        private DelegateCommand applyYaml;
+        public DelegateCommand ApplyYaml => applyYaml ?? (applyYaml = new DelegateCommand(
+                        //execute
+                        async () =>
+                        {
+                            ApplyYamlStatus = "Applying YAML...";
+                            ApplyYamlStatus = await KubectlService.ApplyYaml(SelectedFile);
+                        }
+                    ));
 
         private string applyYamlStatus;
         public string ApplyYamlStatus
