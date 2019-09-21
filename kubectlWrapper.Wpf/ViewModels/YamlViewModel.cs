@@ -31,8 +31,6 @@ namespace kubectlWrapper.Wpf.ViewModels
         {
             get { return selectedDirectory; }
             set {
-                selectedDirectory = value;
-                RaisePropertyChanged();
                 if (!Fileservice.DirectoryIsValid(value))
                 {
                     SelectedDirectoryError = "Directory Not Valid";
@@ -40,30 +38,33 @@ namespace kubectlWrapper.Wpf.ViewModels
                 else
                 {
                     SelectedDirectoryError = null;
+                    FileList = new ObservableCollection<string>(Fileservice.ReadDirectoryOrNull(value));
                 }
-                FileList = new ObservableCollection<string>(Fileservice.ReadDirectoryOrNull(value));
+                SetProperty(ref selectedDirectory, value);
             }
         }
 
         private string selectedDirectoryError;
-
         public string SelectedDirectoryError
         {
             get { return selectedDirectoryError; }
             set {
                 SetProperty(ref selectedDirectoryError, value);
-                ErrorDictionary[nameof(SelectedDirectoryError)] = value;
+                ErrorDictionary[nameof(SelectedDirectory)] = value;
                 SelectedDirectoryErrorVisibility = String.IsNullOrWhiteSpace(value) ? Visibility.Collapsed : Visibility.Visible;
+                RaisePropertyChanged(nameof(Error));
             }
         }
 
         private Visibility selectedDirectoryErrorVisibility;
-
         public Visibility SelectedDirectoryErrorVisibility
         {
             get { return selectedDirectoryErrorVisibility; }
-            set { SetProperty(ref selectedDirectoryErrorVisibility, value); }
+            set {
+                SetProperty(ref selectedDirectoryErrorVisibility, value);
+            }
         }
+
 
 
 
@@ -73,8 +74,7 @@ namespace kubectlWrapper.Wpf.ViewModels
             get { return fileList; }
             set
             {
-                fileList = value;
-                RaisePropertyChanged();
+                SetProperty(ref fileList, value);
             }
         }
 
@@ -96,7 +96,7 @@ namespace kubectlWrapper.Wpf.ViewModels
             set
             {
                 applyYamlStatus = "Status: " + value;
-                RaisePropertyChanged(nameof(ApplyYamlStatus));
+                RaisePropertyChanged();
             }
         }
 
@@ -116,12 +116,37 @@ namespace kubectlWrapper.Wpf.ViewModels
             {
                 if (selectedFile != value)
                 {
-                    selectedFile = value;
-                    SelectedFileContents = Fileservice.ReadFile(selectedFile);
-                    RaisePropertyChanged();
+                    SelectedFileContents = Fileservice.ReadFile(value);
+                    SetProperty(ref selectedFile, value);
                     RaisePropertyChanged(nameof(SelectedFileIsYaml));
                     RaisePropertyChanged(nameof(ApplyYaml));
+                    if (value.Contains("yml") || value.Contains("yaml"))
+                        SelectedFileNotYamlError = null;
+                    else
+                        SelectedFileNotYamlError = "Selected File Not Yaml";
                 }
+            }
+        }
+
+
+        private string selectedFileNotYamlError;
+        public string SelectedFileNotYamlError
+        {
+            get { return selectedFileNotYamlError; }
+            set
+            {
+                selectedFileNotYamlError = value;
+                ErrorDictionary[nameof(SelectedFile)] = value;
+                SelectedDirectoryErrorVisibility = String.IsNullOrWhiteSpace(value) ? Visibility.Collapsed : Visibility.Visible;
+                RaisePropertyChanged(nameof(Error));
+            }
+        }
+        private Visibility selectedFileNotYamlErrorVisibility;
+        public Visibility SelectedFileNotYamlErrorVisibility
+        {
+            get { return selectedFileNotYamlErrorVisibility; }
+            set { selectedFileNotYamlErrorVisibility = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -132,9 +157,15 @@ namespace kubectlWrapper.Wpf.ViewModels
             get { return selectedFileContents; }
             set
             {
-                selectedFileContents = value;
-                RaisePropertyChanged(nameof(SelectedFileContents));
+                SetProperty(ref selectedFileContents, value);
             }
         }
+
+        //public Visibility ErrorVisibility
+        //{
+        //    get => (selectedFileNotYamlErrorVisibility == Visibility.Visible || SelectedDirectoryErrorVisibility == Visibility.Visible) ? Visibility.Visible : Visibility.Hidden;
+        //}
+        
+
     }
 }

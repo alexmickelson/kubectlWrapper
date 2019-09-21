@@ -11,8 +11,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/StyleDictionary.xaml"/>
                 <ResourceDictionary Source="/ErrorDictionary.xaml"/>
+                <ResourceDictionary Source="/StyleDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -21,6 +21,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel>
             <TextBlock Text="Apply YAML Files"
@@ -28,7 +29,8 @@
                        FontSize="15"
                        HorizontalAlignment="Center"/>
             <TextBox Text="{Binding SelectedDirectory,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"
-                    Padding="10"/>
+                     Padding="10"
+                     />
             <TextBlock Text="{Binding SelectedDirectoryError}"
                        Visibility="{Binding SelectedDirectoryErrorVisibility}"/>
             <ScrollViewer MaxHeight="300">
@@ -58,5 +60,8 @@
                     IsEnabled="{Binding SelectedFileIsYaml}"/>
             <TextBlock Text="{Binding ApplyYamlStatus}"/>
         </StackPanel>
+        <TextBlock Grid.Row="3"
+                   Text="{Binding Error}"
+                   Foreground="Red"/>
     </Grid>
 </UserControl>

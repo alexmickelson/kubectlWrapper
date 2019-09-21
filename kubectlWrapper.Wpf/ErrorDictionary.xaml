@@ -8,8 +8,7 @@
                 <ControlTemplate>
                     <DockPanel LastChildFill="True">
                         <TextBlock DockPanel.Dock="Right"
-                                       Foreground="Red"
-                                       FontSize="12"><Run Text="*" /></TextBlock>
+                                       Foreground="Red"><Run Text="*" /></TextBlock>
                         <Border BorderBrush="Red"
                                     BorderThickness="2"
                                     CornerRadius="3">
@@ -26,5 +25,12 @@
                             Value="{Binding (Validation.Errors)[0].ErrorContent, RelativeSource={RelativeSource Self}}" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style TargetType="TextBox"
+               BasedOn="{StaticResource ValidationTemplate}">
+    </Style>
+    <Style TargetType="TextBlock"
+               BasedOn="{StaticResource ValidationTemplate}">
     </Style>
 </ResourceDictionary>
