@@ -60,8 +60,12 @@ namespace kubectlWrapper.Wpf.ViewModels
         public Visibility SelectedDirectoryErrorVisibility
         {
             get { return selectedDirectoryErrorVisibility; }
-            set {
+            set
+            {
                 SetProperty(ref selectedDirectoryErrorVisibility, value);
+                RaisePropertyChanged(nameof(Error));
+                RaisePropertyChanged(nameof(ErrorVisibility));
+                RaisePropertyChanged(nameof(SelectedFileIsYaml));
             }
         }
 
@@ -105,7 +109,8 @@ namespace kubectlWrapper.Wpf.ViewModels
         {
             get
             {
-                return (!string.IsNullOrEmpty(SelectedFile)) && (SelectedFile.EndsWith("yml") || SelectedFile.EndsWith("yaml"));
+                return selectedFileNotYamlErrorVisibility != Visibility.Visible && SelectedDirectoryErrorVisibility != Visibility.Visible;
+                    //(!string.IsNullOrEmpty(SelectedFile)) && (SelectedFile.EndsWith("yml") || SelectedFile.EndsWith("yaml"));
             }
         }
         private string selectedFile;
@@ -137,7 +142,7 @@ namespace kubectlWrapper.Wpf.ViewModels
             {
                 selectedFileNotYamlError = value;
                 ErrorDictionary[nameof(SelectedFile)] = value;
-                SelectedDirectoryErrorVisibility = String.IsNullOrWhiteSpace(value) ? Visibility.Collapsed : Visibility.Visible;
+                SelectedFileNotYamlErrorVisibility = String.IsNullOrWhiteSpace(value) ? Visibility.Collapsed : Visibility.Visible;
                 RaisePropertyChanged(nameof(Error));
             }
         }
@@ -147,6 +152,8 @@ namespace kubectlWrapper.Wpf.ViewModels
             get { return selectedFileNotYamlErrorVisibility; }
             set { selectedFileNotYamlErrorVisibility = value;
                 RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ErrorVisibility));
+                RaisePropertyChanged(nameof(SelectedFileIsYaml));
             }
         }
 
@@ -161,11 +168,11 @@ namespace kubectlWrapper.Wpf.ViewModels
             }
         }
 
-        //public Visibility ErrorVisibility
-        //{
-        //    get => (selectedFileNotYamlErrorVisibility == Visibility.Visible || SelectedDirectoryErrorVisibility == Visibility.Visible) ? Visibility.Visible : Visibility.Hidden;
-        //}
-        
+        public Visibility ErrorVisibility
+        {
+            get => (selectedFileNotYamlErrorVisibility == Visibility.Visible || SelectedDirectoryErrorVisibility == Visibility.Visible) ? Visibility.Visible : Visibility.Hidden;
+        }
+
 
     }
 }

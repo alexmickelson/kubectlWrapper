@@ -16,7 +16,7 @@ namespace GuiSamples.Wpf
 
         public string Error
         {
-            get { return String.Join("; ", ErrorDictionary.Values); }
+            get { return ErrorDictionary.Values.Count < 1 ? String.Empty: String.Join(", ", ErrorDictionary.Values); }
         }
 
         public string this[string columnName]
