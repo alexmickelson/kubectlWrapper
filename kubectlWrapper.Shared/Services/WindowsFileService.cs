@@ -13,7 +13,7 @@ namespace kubectlWrapper.Shared.Services
             return System.IO.File.ReadAllText(location);
         }
 
-        public List<string> ReadDirectory(string directory)
+        public List<string> ReadDirectoryOrNull(string directory)
         {
             if (Directory.Exists(directory))
             {
@@ -25,6 +25,9 @@ namespace kubectlWrapper.Shared.Services
             }
         }
 
-
+        public bool DirectoryIsValid(string directory)
+        {
+            return Directory.Exists(directory);
+        }
     }
 }

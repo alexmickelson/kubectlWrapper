@@ -4,7 +4,8 @@ namespace kubectlWrapper.Shared.Services
 {
     public interface IFileService
     {
-        List<string> ReadDirectory(string directory);
+        List<string> ReadDirectoryOrNull(string directory);
+        bool DirectoryIsValid(string directory);
         string ReadFile(string location);
     }
 }

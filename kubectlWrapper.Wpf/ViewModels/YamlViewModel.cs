@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace kubectlWrapper.Wpf.ViewModels
 {
@@ -32,9 +33,38 @@ namespace kubectlWrapper.Wpf.ViewModels
             set {
                 selectedDirectory = value;
                 RaisePropertyChanged();
-                FileList = new ObservableCollection<string>(Fileservice.ReadDirectory(value));
+                if (!Fileservice.DirectoryIsValid(value))
+                {
+                    SelectedDirectoryError = "Directory Not Valid";
+                }
+                else
+                {
+                    SelectedDirectoryError = null;
+                }
+                FileList = new ObservableCollection<string>(Fileservice.ReadDirectoryOrNull(value));
             }
         }
+
+        private string selectedDirectoryError;
+
+        public string SelectedDirectoryError
+        {
+            get { return selectedDirectoryError; }
+            set {
+                SetProperty(ref selectedDirectoryError, value);
+                ErrorDictionary[nameof(SelectedDirectoryError)] = value;
+                SelectedDirectoryErrorVisibility = String.IsNullOrWhiteSpace(value) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        private Visibility selectedDirectoryErrorVisibility;
+
+        public Visibility SelectedDirectoryErrorVisibility
+        {
+            get { return selectedDirectoryErrorVisibility; }
+            set { SetProperty(ref selectedDirectoryErrorVisibility, value); }
+        }
+
 
 
         private ObservableCollection<string> fileList;
@@ -44,7 +74,7 @@ namespace kubectlWrapper.Wpf.ViewModels
             set
             {
                 fileList = value;
-                RaisePropertyChanged(nameof(FileList));
+                RaisePropertyChanged();
             }
         }
 
@@ -70,8 +100,14 @@ namespace kubectlWrapper.Wpf.ViewModels
             }
         }
 
-        public bool IsSelectedFile => !string.IsNullOrEmpty(SelectedFile);
 
+        public bool SelectedFileIsYaml
+        {
+            get
+            {
+                return (!string.IsNullOrEmpty(SelectedFile)) && (SelectedFile.EndsWith("yml") || SelectedFile.EndsWith("yaml"));
+            }
+        }
         private string selectedFile;
         public string SelectedFile
         {
@@ -83,11 +119,12 @@ namespace kubectlWrapper.Wpf.ViewModels
                     selectedFile = value;
                     SelectedFileContents = Fileservice.ReadFile(selectedFile);
                     RaisePropertyChanged();
-                    RaisePropertyChanged(nameof(IsSelectedFile));
+                    RaisePropertyChanged(nameof(SelectedFileIsYaml));
                     RaisePropertyChanged(nameof(ApplyYaml));
                 }
             }
         }
+
 
         private string selectedFileContents;
         public string SelectedFileContents

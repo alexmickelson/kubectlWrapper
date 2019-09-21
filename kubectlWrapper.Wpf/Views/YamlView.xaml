@@ -12,17 +12,25 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/StyleDictionary.xaml"/>
+                <ResourceDictionary Source="/ErrorDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <StackPanel>
             <TextBlock Text="Apply YAML Files"
                        FontWeight="Heavy"
                        FontSize="15"
                        HorizontalAlignment="Center"/>
-            <TextBox Text="{Binding SelectedDirectory,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Text="{Binding SelectedDirectory,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,ValidatesOnDataErrors=True}"
                     Padding="10"/>
+            <TextBlock Text="{Binding SelectedDirectoryError}"
+                       Visibility="{Binding SelectedDirectoryErrorVisibility}"/>
             <ScrollViewer MaxHeight="300">
                 <ListView ItemsSource="{Binding FileList, Mode=OneWay}"
                       SelectedItem="{Binding SelectedFile, Mode=TwoWay}"
@@ -35,20 +43,20 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </ScrollViewer>
-
         </StackPanel>
 
-        <ScrollViewer>
+        <ScrollViewer Grid.Row="1">
             <TextBlock Text="{Binding SelectedFileContents}"
                           Background="#FF474E56"/>
         </ScrollViewer>
 
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="2">
             <Button Content="Apply Selected File" 
                     Padding="20 5 20 5"
                     Command="{Binding ApplyYaml}"
-                    IsEnabled="{Binding IsSelectedFile}"/>
+                    IsEnabled="{Binding SelectedFileIsYaml}"/>
             <TextBlock Text="{Binding ApplyYamlStatus}"/>
         </StackPanel>
-    </StackPanel>
+    </Grid>
 </UserControl>
