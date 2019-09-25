@@ -23,7 +23,7 @@ namespace kubectlWrapper.Wpf.ViewModels
         public DelegateCommand<string> ShowView => showView ?? (showView = new DelegateCommand<string>(
                         //execute
                         (uri) => {
-                            regionManager.RequestNavigate("ContentRegion", uri);
+                            regionManager.RequestNavigate(Constants.ContentRegion, uri);
                         }
                     ));
 
