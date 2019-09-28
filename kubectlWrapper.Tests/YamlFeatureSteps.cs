@@ -30,46 +30,6 @@ namespace kubectlWrapper.Tests
             context.Add(TestConstants.FileMock, fileMock);
         }
 
-        [Given(@"you are at the Yaml View")]
-        public void GivenYouAreAtTheYamlView()
-        {
-            var kubeMock = context.Get<Mock<IKubeService>>(TestConstants.KubeMock);
-            var regionMock = context.Get<Mock<IFileService>>(TestConstants.FileMock);
-            var vm = new YamlViewModel(kubeMock.Object, regionMock.Object);
-            context.Add(TestConstants.YamlViewModel, vm);
-        }
-
-        [When(@"the user provides directory (.*)")]
-        public void WhenTheUserProvidesDirectory(string dir)
-        {
-            var fileMock = context.Get<Mock<IFileService>>(TestConstants.FileMock);
-            fileMock.Setup(f => f.DirectoryIsValid("validDir")).Returns(true);
-            fileMock.Setup(f => f.DirectoryIsValid("invalidDir")).Returns(false);
-
-            var vm = context.Get<YamlViewModel>(TestConstants.YamlViewModel);
-            vm.SelectedDirectory = dir;
-        }
-
-        [When(@"the user selects file (.*)")]
-        public void WhenTheUserSelectsFile(string file)
-        {
-            var fileMock = context.Get<Mock<IFileService>>(TestConstants.FileMock);
-            fileMock.Setup(f => f.ReadFile(file)).Returns(string.Empty);
-            var vm = context.Get<YamlViewModel>(TestConstants.YamlViewModel);
-            vm.SelectedFile = file;
-        }
-
-        [Then(@"the button is (.*)")]
-        public void ThenTheButtonIs(string enabled)
-        {
-            var enabledBool = enabled == "true";
-            var vm = context.Get<YamlViewModel>(TestConstants.YamlViewModel);
-            vm.SelectedFileIsYaml.Should().Be(enabledBool);
-        }
-
-
-
-
         [Given(@"the application is initialized")]
         public void GivenTheApplicationIsInitialized()
         {

@@ -132,21 +132,31 @@ this.ScenarioInitialize(scenarioInfo);
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("valid input allow yaml to be applied")]
         [NUnit.Framework.CategoryAttribute("tag1")]
-        public virtual void ValidInputAllowYamlToBeApplied()
+        [NUnit.Framework.TestCaseAttribute("validDir", "valid.yaml", "true", null)]
+        [NUnit.Framework.TestCaseAttribute("validDir", "valid.yml", "true", null)]
+        [NUnit.Framework.TestCaseAttribute("invalidDir", "invalid.not", "false", null)]
+        [NUnit.Framework.TestCaseAttribute("validDir", "invalid.not", "false", null)]
+        [NUnit.Framework.TestCaseAttribute("invalidDir", "valid.aspiresbutfailstobe", "false", null)]
+        public virtual void ValidInputAllowYamlToBeApplied(string dir, string file, string enabled, string[] exampleTags)
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("valid input allow yaml to be applied", null, new string[] {
-                        "tag1"});
-#line 24
+            string[] @__tags = new string[] {
+                    "tag1"};
+            if ((exampleTags != null))
+            {
+                @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
+            }
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("valid input allow yaml to be applied", null, @__tags);
+#line 23
 this.ScenarioInitialize(scenarioInfo);
             this.ScenarioStart();
-#line 25
+#line 24
  testRunner.Given("you are at the Yaml View", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 25
+ testRunner.When("the user provides directory <dir>", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 26
- testRunner.When("the user provides directory validDir", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.And("the user selects file <file>", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 27
- testRunner.And("the user selects file valid.yaml", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 28
- testRunner.Then("the button is true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("the button is <enabled>", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
