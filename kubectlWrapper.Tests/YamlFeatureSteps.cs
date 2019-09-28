@@ -7,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using Prism.Regions;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 
@@ -102,9 +103,5 @@ namespace kubectlWrapper.Tests
             Assert.AreEqual(TestConstants.GetConfigResult, vm.ClusterInfo);
         }
 
-
-        
-        
-        
-    }
+            }
 }

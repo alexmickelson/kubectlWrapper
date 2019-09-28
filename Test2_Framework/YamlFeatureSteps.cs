@@ -64,6 +64,41 @@ namespace Test2_Framework
             var vm = context.Get<YamlViewModel>(TestConstants.YamlViewModel);
             vm.SelectedFileIsYaml.Should().Be(enabledBool);
         }
+
+
+
+
+        [Given(@"the instructions of the assigment")]
+        public void GivenTheInstructionsOfTheAssigment()
+        {
+            var kubeMock = context.Get<Mock<IKubeService>>(TestConstants.KubeMock);
+            var regionMock = context.Get<Mock<IFileService>>(TestConstants.FileMock);
+            var vm = new YamlViewModel(kubeMock.Object, regionMock.Object);
+            context.Add(TestConstants.YamlViewModel, vm);
+        }
+
+        [When(@"The table is")]
+        public void WhenTheTableIs(Table table)
+        {
+            var data = new List<string>(table.Header);
+            var dir = data[0];
+            var file = data[1];
+            var vm = context.Get<YamlViewModel>(TestConstants.YamlViewModel);
+            var fileMock = context.Get<Mock<IFileService>>(TestConstants.FileMock);
+            fileMock.Setup(f => f.DirectoryIsValid("validDir")).Returns(true);
+            fileMock.Setup(f => f.DirectoryIsValid("invalidDir")).Returns(false);
+            fileMock.Setup(f => f.ReadDirectoryOrNull(dir)).Returns(new List<string> { });
+            fileMock.Setup(f => f.ReadFile(file)).Returns(string.Empty);
+            vm.SelectedDirectory = dir;
+            vm.SelectedFile = file;
+        }
+
+        [Then(@"The button is enabled")]
+        public void ThenTheButtonIsEnabled()
+        {
+            var vm = context.Get<YamlViewModel>(TestConstants.YamlViewModel);
+            vm.SelectedFileIsYaml.Should().BeTrue();
+        }
     }
 
 

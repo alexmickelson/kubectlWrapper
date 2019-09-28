@@ -185,6 +185,29 @@ this.ValidInputAllowYamlToBeApplied("validDir", "invalid.not", "false", ((string
 this.ValidInputAllowYamlToBeApplied("invalidDir", "valid.aspiresbutfailstobe", "false", ((string[])(null)));
 #line hidden
         }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Jonathan has required a table")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "YamlFeature")]
+        public virtual void JonathanHasRequiredATable()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Jonathan has required a table", null, ((string[])(null)));
+#line 20
+this.ScenarioInitialize(scenarioInfo);
+            this.ScenarioStart();
+#line 21
+ testRunner.Given("the instructions of the assigment", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                        "validDir",
+                        "inputValidFile.yaml"});
+#line 22
+ testRunner.When("The table is", ((string)(null)), table1, "When ");
+#line 24
+ testRunner.Then("The button is enabled", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

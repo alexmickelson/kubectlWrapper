@@ -15,3 +15,10 @@ Examples:
 | invalidDir | invalid.not               | false   |
 | validDir   | invalid.not               | false   |
 | invalidDir | valid.aspiresbutfailstobe | false   |
+
+
+Scenario: Jonathan has required a table
+	Given the instructions of the assigment
+	When The table is
+	| validDir | inputValidFile.yaml |
+	Then The button is enabled

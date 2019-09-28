@@ -22,5 +22,6 @@ Scenario: get status
 	When the user clicks getconfig button
 	Then the correct config of the cluster is recieved
 
+
 	
 
