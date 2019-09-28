@@ -1,6 +1,8 @@
 ﻿Feature: YamlFeature
 
 A short summary of the feature
+Background: 
+	Given we have mocked all of our services
 
 @tag1
 Scenario: navigate to yaml view

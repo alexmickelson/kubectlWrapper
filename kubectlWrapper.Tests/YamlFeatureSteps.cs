@@ -17,10 +17,15 @@ namespace kubectlWrapper.Tests
     {
         private readonly ScenarioContext context;
 
+
         public YamlFeatureSteps(ScenarioContext context)
         {
             this.context = context;
 
+        }
+        [Given(@"we have mocked all of our services")]
+        public void GivenWeHaveMockedAllOfOurServices()
+        {
             var regionManagerMock = new Mock<IRegionManager>();
             var kubeMock = new Mock<IKubeService>();
             var fileMock = new Mock<IFileService>();
@@ -29,6 +34,7 @@ namespace kubectlWrapper.Tests
             context.Add(TestConstants.KubeMock, kubeMock);
             context.Add(TestConstants.FileMock, fileMock);
         }
+
 
         [Given(@"the application is initialized")]
         public void GivenTheApplicationIsInitialized()
